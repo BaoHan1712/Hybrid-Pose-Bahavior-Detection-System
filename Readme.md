@@ -9,7 +9,7 @@ Hệ thống được phát triển để giám sát hoạt động của công 
 flowchart TD
 A[Input Video] --> B[YOLO Pose Detection]
 B --> C[Region of Interest]
-C --> D[Extract Person (skeleton + bounding box)]
+C --> D[Extract skeleton and bbox]
 D --> E[EfficientNet Classification]
 E --> F[Classification Working/Not Working]
 F --> G[Display Result]
