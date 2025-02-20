@@ -8,12 +8,12 @@ Hệ thống được phát triển để giám sát hoạt động của công 
 ```mermaid
 flowchart TD
 A[Input Video] --> B[YOLO Pose Detection]
-B --> C[Vùng Quan Sát Check]
-C --> D[Trích Xuất Người]
+B --> C[Region of Interest]
+C --> D[Extract Person (skeleton + bounding box)]
 D --> E[EfficientNet Classification]
-E --> F[Phân Loại Working/Not Working]
-F --> G[Hiển Thị Kết Quả]
-G --> H[Lưu Lịch Sử]
+E --> F[Classification Working/Not Working]
+F --> G[Display Result]
+G --> H[Save History]
 ```
 
 ## Các Thành Phần Chính
