@@ -1,19 +1,27 @@
 # Hệ Thống Giám Sát Hoạt Động Công Nhân Sử Dụng YOLO và EfficientNet
 
-## Tổng Quan
+## 📝 Tổng Quan
 Hệ thống được phát triển để giám sát hoạt động của công nhân trong khu vực làm việc, sử dụng kết hợp giữa YOLO pose estimation và phân loại hành vi với EfficientNet. Hệ thống có khả năng phát hiện và phân loại trạng thái làm việc của công nhân trong thời gian thực.
 
-## Sơ Đồ Luồng Hoạt Động
+## 🔄 Luồng Xử Lý Chi Tiết
 
 ```mermaid
-flowchart TD
-A[Input Video] --> B[YOLO Pose Detection]
-B --> C[Region of Interest]
-C --> D[Extract skeleton and bbox]
-D --> E[EfficientNet Classification]
-E --> F[Classification Working/Not Working]
-F --> G[Display Result]
-G --> H[Save History]
+graph TD
+A[Input Video Stream] --> B[Frame Extraction]
+B --> C[YOLO Pose Detection]
+C --> D[Region of Interest Check]
+D --> E[Keypoint Extraction]
+E --> F[Skeleton Drawing]
+F --> G[Person Cropping]
+G --> H[EfficientNet Classification]
+H --> I[Label History Update]
+I --> J[Voting System]
+J --> K[Final Prediction]
+K --> L[Display & Logging]
+style A fill:#f9d,stroke:#333
+style C fill:#bbf,stroke:#333
+style H fill:#bfb,stroke:#333
+style K fill:#fbb,stroke:#333
 ```
 
 ## Các Thành Phần Chính
