@@ -14,6 +14,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 import numpy as np
+import time
+import io
+import openpyxl
 
 
 
@@ -71,6 +74,7 @@ class BehaviorAnalysisApp:
         self.working_frames = 0
         self.not_working_frames = 0
         self.person_count = 0
+        self.last_save_time = time.time()
         
         # Load models
         self.load_models()
@@ -249,9 +253,12 @@ class BehaviorAnalysisApp:
             self.not_working_label.configure(text=f"Không làm việc: {not_working_percent:.1f}%")
             self.person_count_label.configure(text=f"Số người: {person_count}")
 
-            # Thêm vào sau phần cập nhật GUI (dòng 221):
-            if total > 0:
-                self.update_analysis_data(working_percent, not_working_percent, person_count)
+            # Thêm vào sau phần cập nhật GUI
+            current_time = time.time()
+            if current_time - self.last_save_time >= 1.0:
+                if total > 0:
+                    self.update_analysis_data(working_percent, not_working_percent, person_count)
+                    self.last_save_time = current_time
 
         # Ghi frame đã xử lý
         self.out.write(frame)
@@ -356,6 +363,42 @@ class BehaviorAnalysisApp:
             # Tạo tên file với timestamp
             filename = os.path.join('reports', f"bao_cao_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
             
+            # Tạo các biểu đồ
+            fig = plt.Figure(figsize=(12, 8))
+            
+            # Biểu đồ phần trăm làm việc theo thời gian
+            ax1 = fig.add_subplot(221)
+            ax1.plot(self.analysis_data['timestamp'], 
+                    self.analysis_data['working_percent'], 
+                    label='Làm việc', color='green')
+            ax1.plot(self.analysis_data['timestamp'], 
+                    self.analysis_data['not_working_percent'], 
+                    label='Không làm việc', color='red')
+            ax1.set_title('Tỷ lệ làm việc theo thời gian')
+            ax1.legend()
+            
+            # Biểu đồ số người theo thời gian
+            ax2 = fig.add_subplot(222)
+            ax2.plot(self.analysis_data['timestamp'], 
+                    self.analysis_data['person_count'], 
+                    color='blue')
+            ax2.set_title('Số người theo thời gian')
+            
+            # Biểu đồ phân phối trạng thái
+            ax3 = fig.add_subplot(223)
+            working_avg = np.mean(self.analysis_data['working_percent'])
+            not_working_avg = np.mean(self.analysis_data['not_working_percent'])
+            ax3.pie([working_avg, not_working_avg], 
+                    labels=['Làm việc', 'Không làm việc'],
+                    colors=['green', 'red'],
+                    autopct='%1.1f%%')
+            ax3.set_title('Phân phối trạng thái trung bình')
+
+            # Lưu biểu đồ vào buffer
+            img_buf = io.BytesIO()
+            fig.savefig(img_buf, format='png', bbox_inches='tight')
+            plt.close(fig)
+            
             # Tạo ExcelWriter với engine='openpyxl'
             with pd.ExcelWriter(filename, engine='openpyxl') as writer:
                 # Sheet dữ liệu chi tiết
@@ -381,6 +424,11 @@ class BehaviorAnalysisApp:
                     ]
                 })
                 summary.to_excel(writer, sheet_name='Tổng quan', index=False)
+
+                # Thêm sheet biểu đồ
+                worksheet = writer.book.create_sheet('Biểu đồ')
+                img = openpyxl.drawing.image.Image(img_buf)
+                worksheet.add_image(img, 'A1')
             
             tk.messagebox.showinfo("Thành công", f"Đã xuất báo cáo: {filename}")
             
