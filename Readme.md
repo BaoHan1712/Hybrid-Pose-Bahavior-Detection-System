@@ -18,10 +18,12 @@ H --> I[Label History Update]
 I --> J[Voting System]
 J --> K[Final Prediction]
 K --> L[Display & Logging]
+L --> M[Export Reports]
 style A fill:#f9d,stroke:#333
 style C fill:#bbf,stroke:#333
 style H fill:#bfb,stroke:#333
 style K fill:#fbb,stroke:#333
+style M fill:#dfd,stroke:#333
 ```
 
 ## Các Thành Phần Chính
@@ -108,4 +110,26 @@ python cover/ve_vung.py
 - Tự động điều chỉnh độ tin cậy
 - Xử lý đa luồng cho hiệu suất cao
 
+## 📊 Tính Năng Chính
+
+### 1. Giao Diện Người Dùng
+- Giao diện đồ họa trực quan với Tkinter
+- Hiển thị video stream theo thời gian thực
+- Điều khiển bắt đầu/dừng phân tích
+- Hiển thị thống kê và biểu đồ trực quan
+
+### 2. Phát Hiện và Phân Tích
+- Phát hiện người với độ tin cậy > 95%
+- Vẽ skeleton 17 điểm keypoint
+- Phân loại hành vi làm việc/không làm việc
+- Tính toán tỷ lệ theo thời gian thực
+
+### 3. Báo Cáo và Thống Kê
+- Xuất báo cáo Excel với 2 sheet:
+  - Chi tiết: Dữ liệu theo thời gian
+  - Tổng quan: Thống kê tổng hợp
+- Biểu đồ phân tích:
+  - Tỷ lệ làm việc theo thời gian
+  - Số lượng người theo thời gian
+  - Phân phối trạng thái trung bình
 
