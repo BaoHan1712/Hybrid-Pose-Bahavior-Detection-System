@@ -12,7 +12,7 @@ class EfficientNetB2_Model(nn.Module):
         super(EfficientNetB2_Model, self).__init__()
 
         # Load EfficientNet-B2 với pretrained weights
-        self.efficientnet = timm.create_model("efficientnet_b2", pretrained=True)
+        self.efficientnet = timm.create_model(r"model\efficientnet_b2", pretrained=True)
 
         # Đóng băng toàn bộ mô hình trước, chỉ fine-tune phần cuối
         for param in self.efficientnet.parameters():
